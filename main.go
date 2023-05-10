@@ -1,28 +1,29 @@
 package main
 
 import (
-	feRobot "fe-robot/robot"
 	"fmt"
+	"net/http"
 )
 
 func main() {
+	//http://127.0.0.1:8000/go
+	// 单独写回调函数
+	http.HandleFunc("/go", myHandler)
+	//http.HandleFunc("/ungo",myHandler2 )
+	// addr：监听的地址
+	// handler：回调函数
+	http.ListenAndServe("127.0.0.1:8000", nil)
+}
 
-	r := feRobot.Default()
-
-	robotInfo := &feRobot.RobotInfo{
-		Name:     "Jin1",
-		Sex:      feRobot.Man,
-		Emotion:  feRobot.Emotion2,
-		Language: feRobot.Chinese,
-	}
-
-	ok := r.Create(robotInfo)
-
-	if !ok {
-		fmt.Println("create failed")
-	}
-
-	fmt.Println("完成机器人初始化>>>", *r)
-
-	r.Send("你好")
+// handler函数
+func myHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.RemoteAddr, "连接成功")
+	// 请求方式：GET POST DELETE PUT UPDATE
+	fmt.Println("method:", r.Method)
+	// /go
+	fmt.Println("url:", r.URL.Path)
+	fmt.Println("header:", r.Header)
+	fmt.Println("body:", r.Body)
+	// 回复
+	w.Write([]byte("www.5lmh.com"))
 }
